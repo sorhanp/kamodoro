@@ -19,8 +19,14 @@ include_directories(
 
 # Create executable by including test files
 add_executable(kamodoro_tests
-    main.cpp)
+    main.cpp
+    TimerTest.cpp)
 
 # Link boost libraries to executable
 target_link_libraries(kamodoro_tests
     PUBLIC ${Boost_LIBRARIES})
+
+add_test(
+    NAME kamodoro_tests
+    COMMAND kamodoro_tests --log_level=all --use_alt_stack=1 --show_progress=1
+)
