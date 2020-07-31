@@ -13,6 +13,10 @@ else()
     message(ERROR "BOOST NOT FOUND")
 endif()
 
+#Include FakeIt boost -single-header
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include/FakeIt)
+
 # Create executable by including test files
 add_executable(kamodoro_tests
     main.cpp)
