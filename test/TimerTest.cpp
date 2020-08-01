@@ -9,11 +9,10 @@ struct TimerTestFixture {
   }
 };
 
-template <typename TimeFormat> 
 class Timer{
     public:
-    Timer(auto anyWaitTime): currentTime(std::chrono::steady_clock::now()){
-      endTime = currentTime + TimeFormat(anyWaitTime);
+    explicit Timer(std::chrono::nanoseconds duration): currentTime(std::chrono::steady_clock::now()){
+      endTime = currentTime + duration;
     };
 
     bool isOver(){
@@ -27,27 +26,29 @@ class Timer{
 };
 
 BOOST_FIXTURE_TEST_SUITE(TimerTests, TimerTestFixture)
+using namespace std::chrono_literals;
 
   BOOST_AUTO_TEST_CASE(isOverMsTest){
-    auto waitTime = 10;
-    Timer<std::chrono::milliseconds> timer(waitTime);
+
+    auto waitTime = 100ms;
+    Timer timer(waitTime);
     
     // Time is not over.
     BOOST_CHECK_EQUAL(timer.isOver(), false);
     
     // Time is over after sleep.
-    std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
+    std::this_thread::sleep_for(waitTime);
     BOOST_CHECK(timer.isOver());
   }
 
   BOOST_AUTO_TEST_CASE(isOverSecondsTest){
-    auto waitTime = 1;
-    Timer<std::chrono::seconds> timer(waitTime);
+    auto waitTime = 1s;
+    Timer timer(waitTime);
     // Time is not over.
     BOOST_CHECK_EQUAL(timer.isOver(), false);
     
     // Time is over after sleep.
-    std::this_thread::sleep_for(std::chrono::seconds(waitTime));
+    std::this_thread::sleep_for(waitTime);
     BOOST_CHECK(timer.isOver());
   }
 
