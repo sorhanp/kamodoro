@@ -10,46 +10,61 @@ struct TimerTestFixture {
 };
 
 class Timer{
-    public:
-    explicit Timer(std::chrono::nanoseconds duration): currentTime(std::chrono::steady_clock::now()){
-      endTime = currentTime + duration;
-    };
+  private:
+  std::chrono::steady_clock::time_point currentTime;
+  std::chrono::steady_clock::time_point endTime = {};
+    
+  public:
+  explicit Timer(std::chrono::nanoseconds duration): currentTime(std::chrono::steady_clock::now()){
+    endTime = currentTime + duration;
+  };
 
-    bool isOver(){
-        currentTime = std::chrono::steady_clock::now();
-        return currentTime > endTime;
-    }
+  auto IsOver(){
+    currentTime = std::chrono::steady_clock::now();
+    return currentTime >= endTime;
+  }
 
-    private:
-    std::chrono::steady_clock::time_point currentTime;
-    std::chrono::steady_clock::time_point endTime;
+  auto Remaining(){
+    currentTime = std::chrono::steady_clock::now();
+    return endTime - currentTime;
+  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(TimerTests, TimerTestFixture)
 using namespace std::chrono_literals;
 
-  BOOST_AUTO_TEST_CASE(isOverMsTest){
+  BOOST_AUTO_TEST_CASE(IsOverMsTest){
 
     auto waitTime = 100ms;
     Timer timer(waitTime);
     
     // Time is not over.
-    BOOST_CHECK_EQUAL(timer.isOver(), false);
+    BOOST_CHECK_EQUAL(timer.IsOver(), false);
     
     // Time is over after sleep.
     std::this_thread::sleep_for(waitTime);
-    BOOST_CHECK(timer.isOver());
+    BOOST_CHECK(timer.IsOver());
   }
 
-  BOOST_AUTO_TEST_CASE(isOverSecondsTest){
+  BOOST_AUTO_TEST_CASE(IsOverSecondsTest){
     auto waitTime = 1s;
     Timer timer(waitTime);
     // Time is not over.
-    BOOST_CHECK_EQUAL(timer.isOver(), false);
+    BOOST_CHECK_EQUAL(timer.IsOver(), false);
     
     // Time is over after sleep.
     std::this_thread::sleep_for(waitTime);
-    BOOST_CHECK(timer.isOver());
+    BOOST_CHECK(timer.IsOver());
+  }
+
+  BOOST_AUTO_TEST_CASE(RemainingTest){
+    // Convert above 1min to nanoseconds for testing
+    auto waitTime = std::chrono::duration_cast<std::chrono::nanoseconds>(1min);
+    Timer timer(waitTime);
+    
+    // Remaining time should be less than waitTime
+    std::this_thread::sleep_for(1ns);
+    BOOST_CHECK_LT(timer.Remaining().count(), waitTime.count());
   }
 
 BOOST_AUTO_TEST_SUITE_END()
