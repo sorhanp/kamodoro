@@ -1,32 +1,13 @@
 #include <boost/test/unit_test.hpp>
 
+#include <Timer.hpp>
+
 #include <chrono>
 #include <thread>
 
 struct TimerTestFixture {
   TimerTestFixture(){
 
-  }
-};
-
-class Timer{
-  private:
-  std::chrono::steady_clock::time_point currentTime;
-  std::chrono::steady_clock::time_point endTime = {};
-    
-  public:
-  explicit Timer(std::chrono::nanoseconds duration): currentTime(std::chrono::steady_clock::now()){
-    endTime = currentTime + duration;
-  };
-
-  auto IsOver(){
-    currentTime = std::chrono::steady_clock::now();
-    return currentTime >= endTime;
-  }
-
-  auto Remaining(){
-    currentTime = std::chrono::steady_clock::now();
-    return endTime - currentTime;
   }
 };
 
