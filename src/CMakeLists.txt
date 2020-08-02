@@ -12,4 +12,4 @@ add_executable(kamodoro
     main.cpp)
 
 target_link_libraries(kamodoro 
-    ${GTKMM_LIBRARIES})
+    PRIVATE ${GTKMM_LIBRARIES})

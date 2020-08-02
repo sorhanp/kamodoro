@@ -13,19 +13,19 @@ else()
     message(ERROR "BOOST NOT FOUND")
 endif()
 
-#Include FakeIt boost -single-header
-include_directories(
-    ${CMAKE_SOURCE_DIR}/include/FakeIt)
-
-#Include FakeIt boost -single-header
-include_directories(
-    ${CMAKE_SOURCE_DIR}/src/)
-
 # Create executable by including test files
 add_executable(kamodoro_tests
     main.cpp
     TimerTest.cpp)
 
+#Include FakeIt boost -single-header
+target_include_directories(kamodoro_tests 
+    PUBLIC ${CMAKE_SOURCE_DIR}/include/FakeIt)
+
+#Include source
+include_directories(
+    ${CMAKE_SOURCE_DIR}/src/)
+    
 target_link_libraries(kamodoro_tests
     PRIVATE timer)
 
@@ -35,5 +35,5 @@ target_link_libraries(kamodoro_tests
 
 add_test(
     NAME kamodoro_tests
-    COMMAND kamodoro_tests --log_level=all --use_alt_stack=1 --show_progress=1
+    COMMAND kamodoro_tests
 )
