@@ -4,6 +4,10 @@ link_directories(
 include_directories(
     ${GTKMM_INCLUDE_DIRS})
 
+add_library(timer
+    Timer.hpp
+    Timer.cpp)   
+
 add_executable(kamodoro 
     main.cpp)
 
